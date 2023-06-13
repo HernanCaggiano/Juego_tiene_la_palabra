@@ -63,26 +63,39 @@ def dameLetra(letrasEnPantalla): #elige una letra de las letras en pantalla
 
 #si es valida la palabra devuelve puntos sino resta.
 def procesar(letraPrincipal, letrasEnPantalla, candidata, diccionario):
-    return Puntos(candidata)
+    valida = esValida(letraPrincipal, letrasEnPantalla, candidata, diccionario)
+    if valida:
+        return Puntos(candidata)
+    else:
+        return -1
 
 
 
+
+#armar nueva funcion: limitar palabras a letras en pantalla
 #AGREGADAS:
 #funcion chequea que solo use las letras de la pantalla
 def palabraArmada(candidata, letrasEnPantalla):
-    for i in candidata:
-        if i in letrasEnPantalla:
-            continue
-        else:
-            return False
-    return True
+    cont = 0
+    #que pasa cuando es menor de 3
+    for i in letrasEnPantalla:
+        if i in candidata:
+            cont += 1
+
+    if cont >=3 and cont < 8:
+        return True
+
+    return False
 
 #funcion de si existe en el diccionario
 def existeEnDiccionario(candidata, diccionario):
-    if candidata in diccionario:
+
+
+    if candidata in lectura(diccionario):
         return True
     else:
         return False
+
 #################
 
 #chequea que se use la letra principal, solo use letras de la pantalla y
@@ -91,12 +104,16 @@ def esValida(letraPrincipal, letrasEnPantalla, candidata, diccionario):
 
     letras = palabraArmada(candidata, letrasEnPantalla)
     enDiccionario = existeEnDiccionario(candidata, diccionario)
+    print(letras)
+    print(enDiccionario)
 
-    if (letraPrincipal in candidata) and letras and enDiccionario:
-        return True
+    if letraPrincipal in candidata:
+        if letras and enDiccionario:
+            return True
+        else:
+            return False
     else:
         return False
-    #return True
 
 
 
@@ -115,6 +132,7 @@ def Puntos(candidata):
             return 10
         else:
             return longitud
+
     #return(5)
 
 
@@ -128,7 +146,7 @@ def dameAlgunasCorrectas(letraPrincipal, letrasEnPantalla, diccionario):
     for palabra in diccionario:
         cont = 0
         for letra in letrasEnPantalla:
-            if letra in palabra:
+            if letra in palabra and letraPrincipal in palabra:
                 cont += 1
             if cont == 7:
                 palabrasAcertadas.append(palabra)
