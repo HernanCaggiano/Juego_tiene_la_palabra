@@ -3,7 +3,7 @@ import os, random, sys, math
 
 import pygame
 from pygame.locals import *
-
+from final import *
 from configuracion import *
 from funcionesVACIAS import *
 from extras import *
@@ -25,10 +25,16 @@ def main():
         segundos = TIEMPO_MAX
         fps = FPS_inicial
 
+        #Sonidos:
+        MusicaDeFondo = pygame.mixer.Sound("Sonidos/MusicaFondo.mp3")
+        MusicaDeFondo.play()
+
+        #variables
         puntos = 0
         candidata = ""
         diccionario = []
         palabrasAcertadas = []
+        musicaFinal = pygame.mixer.Sound("Sonidos/GameOver.mp3")
 
         #lee el diccionario
         lectura(diccionario)
@@ -51,6 +57,12 @@ def main():
         # 1 frame cada 1/fps segundos
             gameClock.tick(fps)
             totaltime += gameClock.get_time()
+
+            #pantalla final
+            if segundos < 1:
+                MusicaDeFondo.stop()
+                musicaFinal.play()
+                pantallaFinal()
 
             if True:
             	fps = 3
@@ -75,6 +87,7 @@ def main():
 
             segundos = TIEMPO_MAX - pygame.time.get_ticks()/1000
 
+
             #Limpiar pantalla anterior
             screen.fill(COLOR_FONDO)
 
@@ -83,12 +96,15 @@ def main():
 
             pygame.display.flip()
 
+
+
         while 1:
             #Esperar el QUIT del usuario
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit()
                     return
+
 
 #Programa Principal ejecuta Main
 if __name__ == "__main__":
