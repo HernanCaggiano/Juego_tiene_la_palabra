@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 import pygame
 from pygame.locals import *
 from configuracion import *
@@ -31,6 +32,8 @@ def dameLetraApretada(key):
         return("m")
     elif key == K_n:
         return("n")
+    elif key == K_n and pygame.key.get_mods() & pygame.KMOD_SHIFT:
+        return("ñ")
     elif key == K_o:
         return("o")
     elif key == K_p:
@@ -60,29 +63,47 @@ def dameLetraApretada(key):
     else:
         return("")
 
-def dibujar(screen, letraPrincipal, letrasEnPantalla, candidata, puntos, segundos):
+
+def dibujar(screen, letraPrincipal, letrasEnPantalla, candidata, puntos, segundos, palabrasAcertadas):
 
     defaultFont= pygame.font.Font( pygame.font.get_default_font(), 20)
     defaultFontGrande= pygame.font.Font( pygame.font.get_default_font(), 80)
 
-    #Linea del piso
-    pygame.draw.line(screen, (255,255,255), (0, ALTO-70) , (ANCHO, ALTO-70), 5)
+    #Rectángulo de letras en pantalla
+    pygame.draw.rect(screen, ANARANJADO, (120, 80, 560, 135))
 
-    ren1 = defaultFont.render(candidata, 1, COLOR_TEXTO)
-    ren2 = defaultFont.render("Puntos: " + str(puntos), 1, COLOR_TEXTO)
+    #Rectángulo de candidata
+    pygame.draw.rect(screen, VERDE, (0, 520, 800, 80))
+
+    #Rectángulo de Aciertos
+    pygame.draw.rect(screen, ANARANJADO, (645, 220, 120, 300))
+
+    ren1 = defaultFont.render(candidata, 1, ANARANJADO_OSCURO)
+    ren2 = defaultFont.render("Puntos: " + str(puntos), 1, NEGRO)
+
     if(segundos<15):
-        ren3 = defaultFont.render("Tiempo: " + str(int(segundos)), 1, COLOR_TIEMPO_FINAL)
+        ren3 = defaultFont.render("Tiempo: " + str(int(segundos)), 1, ROJO)
     else:
-        ren3 = defaultFont.render("Tiempo: " + str(int(segundos)), 1, COLOR_TEXTO)
+        ren3 = defaultFont.render("Tiempo: " + str(int(segundos)), 1, NEGRO)
+
+    ren4 = defaultFont.render("Aciertos: " + str(len(palabrasAcertadas)), 1, NEGRO)
+
     #escribe grande la palabra (letra por letra) y la letra principal de otro color
     pos = 130
     for i in range(len(letrasEnPantalla)):
         if letrasEnPantalla[i] == letraPrincipal:
-            screen.blit(defaultFontGrande.render(letrasEnPantalla[i], 1, COLOR_TIEMPO_FINAL), (pos, 100))
+            screen.blit(defaultFontGrande.render(letrasEnPantalla[i], 1, ROJO), (pos, 100))
         else:
-            screen.blit(defaultFontGrande.render(letrasEnPantalla[i], 1, COLOR_LETRAS), (pos, 100))
+            screen.blit(defaultFontGrande.render(letrasEnPantalla[i], 1, GRIS), (pos, 100))
         pos = pos + TAMANNO_LETRA_GRANDE
 
-    screen.blit(ren1, (190, 570))
+    #escribe las palabras correctas ingresadas
+    pos = 250
+    for c in range(len(palabrasAcertadas)):
+        screen.blit(defaultFont.render(palabrasAcertadas[c], 1, NEGRO), (650, pos))
+        pos = pos + 20
+
+    screen.blit(ren1, (300, 550))
     screen.blit(ren2, (680, 10))
     screen.blit(ren3, (10, 10))
+    screen.blit(ren4, (650, 230))
